@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import { Switch, Route } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,6 +8,7 @@ import Cart from './components/Cart';
 import Default from './components/Default';
 
 function App() {
+  
   return (
     <>
       <Navbar />
