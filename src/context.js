@@ -9,7 +9,12 @@ export function ProductProvider(props) {
   const [state, setState] = useState({
     products: [],
     detailProduct: detailProduct,
-    cart: []
+    cart: [],
+    modalOpen: true,
+    modalProduct: detailProduct,
+    cartSubTotal: 0,
+    cartTax: 0,
+    cartTotal: 0
   });
 
   useEffect(() => {
@@ -43,13 +48,42 @@ export function ProductProvider(props) {
     setState(prev => ({...prev, products: tempProducts, cart:[...prev.cart, product]}));
   }
   
+  const openModal = (id) => {
+    const product = getItem(id);
+    setState(prev => ({...prev, modalProduct: product, modalOpen: true}));
+  }
+
+  const closeModal = () => {
+    setState((prev)=>({...prev, modalOpen: false}));
+  }
+
+  const increment = (id) => {
+    console.log('increment');
+  }
+  const decrement = (id) => {
+    console.log('decrement');
+  }
+
+  const removeItem = (id) => {
+    console.log('item removed');
+  }
+
+  const clearCart = () => {
+    console.log('cart cleared');
+  }
 
   return (
     <ProductContext.Provider 
     value={{
       ...state,
       handleDetail,
-      addToCart
+      addToCart,
+      openModal,
+      closeModal,
+      increment,
+      decrement,
+      removeItem,
+      clearCart
     }}>
       {props.children}
     </ProductContext.Provider>
