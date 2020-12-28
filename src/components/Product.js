@@ -22,7 +22,9 @@ export default function Product(props) {
               value.openModal(id);
             }}
             >
-            {inCart? (<p className="text-capitalize mb-0" disabled>in cart</p>) : <i className="fas fa-cart-plus" />}
+            {inCart? (<p className="text-capitalize mb-0" disabled>in cart</p>) : 
+            <i className="fas fa-cart-plus" />}
+            
             </button>
           </div>
           )}    
@@ -91,11 +93,13 @@ const ProductWrapper = styled.div`
     transform: translate(100%, 100%);
     transition: all 0.3s linear;
   }
-  .img-container:hover .cart-btn{
-    transform: translate(0,0);
-  }
+
   .cart-btn:hover {
     color:var(--mainBlue);
     cursor:pointer;
   }
+  .img-container:hover .cart-btn {
+  transform: translate(0,0);
+  }
 `;
+

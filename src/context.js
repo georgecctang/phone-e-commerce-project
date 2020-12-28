@@ -10,7 +10,7 @@ export function ProductProvider(props) {
     products: [],
     detailProduct: detailProduct,
     cart: [],
-    modalOpen: true,
+    modalOpen: false,
     modalProduct: detailProduct,
     cartSubTotal: 0,
     cartTax: 0,
@@ -45,7 +45,16 @@ export function ProductProvider(props) {
     product.count = 1;
     const price = product.price;
     product.total = price;
-    setState(prev => ({...prev, products: tempProducts, cart:[...prev.cart, product]}));
+    
+    let tempCart = [...state.cart, product]; 
+    const {subTotal, tax, total } = addTotals(tempCart)
+    setState(prev => ({
+      ...prev, 
+      products: tempProducts, 
+      cart: tempCart, 
+      cartSubTotal: subTotal, 
+      cartTax: tax, 
+      cartTotal: total }));
   }
   
   const openModal = (id) => {
@@ -58,18 +67,70 @@ export function ProductProvider(props) {
   }
 
   const increment = (id) => {
-    console.log('increment');
+    const tempCart = [...state.cart];
+    const selectedProduct = tempCart.find(item => item.id === id);
+    const index = tempCart.indexOf(selectedProduct);
+    const product = tempCart[index];
+    product.count += 1;
+    product.total = product.price * product.count;
+    const { subTotal, tax, total } = addTotals(tempCart);
+    setState(prev => ({...prev, cart: tempCart, cartSubTotal: subTotal, cartTax: tax, cartTotal: total}));
+
   }
   const decrement = (id) => {
-    console.log('decrement');
+    const tempCart = [...state.cart];
+    const selectedProduct = tempCart.find(item => item.id === id);
+    const index = tempCart.indexOf(selectedProduct);
+    const product = tempCart[index];
+    product.count -= 1;
+    if (product.count === 0) {
+      removeItem(id);
+      return;
+    }
+    product.total = product.price * product.count;
+    const { subTotal, tax, total } = addTotals(tempCart);
+    setState(prev => ({...prev, cart: tempCart, cartSubTotal: subTotal, cartTax: tax, cartTotal: total}));
   }
 
   const removeItem = (id) => {
-    console.log('item removed');
+    const tempProducts = [...state.products];
+    let tempCart = [...state.cart];
+
+    tempCart = tempCart.filter(item => item.id !== id);
+    const index = tempProducts.indexOf(getItem(id));
+    let removedProduct = tempProducts[index];
+    removedProduct.inCart = false;
+    removedProduct.count = 0;
+    removedProduct.total = 0;
+    const {subTotal, tax, total} = addTotals(tempCart);
+    setState(prev => ({
+      ...prev, 
+      cart: tempCart, 
+      products: tempProducts, 
+      cartSubTotal: subTotal, 
+      cartTax: tax, 
+      cartTotal: total}));
+  }
+
+  const addTotals = (cart) => {
+    let subTotal = 0;
+    cart.forEach(item => {
+      subTotal += item.total;
+    });
+    const tempTax = subTotal * 0.1;
+    const tax = parseFloat(tempTax.toFixed(2));
+    const total = subTotal + tax;
+    console.log('addTotals: ', subTotal, tax, total)
+    return {subTotal, tax, total};
   }
 
   const clearCart = () => {
-    console.log('cart cleared');
+    const tempProducts = [];
+    storeProducts.forEach(item => {
+      tempProducts.push({...item});
+    });
+    setState(prev => ({...prev, products: tempProducts, cartSubTotal: 0, cartTax: 0, cartTotal: 0, cart: []}));
+    
   }
 
   return (

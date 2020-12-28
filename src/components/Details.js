@@ -1,7 +1,6 @@
 import { ProductConsumer } from '../context';
 import {Link} from 'react-router-dom';
 import { ButtonContainer } from './Button';
-import Product from './Product';
 
 export default function Details() {
   return (
